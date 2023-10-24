@@ -6,9 +6,9 @@ namespace StudentEnrollmentSystem.Interfaces
 {
     public interface IStudent
     {
-        Task<ActionResult<Enrollment>> PostEnrollment(EnrollmentDTO enrollment);
-        Task<IActionResult> DeleteEnrollment(int enrollmentId);
-        IActionResult GetEnrollmentsByUserId(string userId);
+        Task<dynamic> PostEnrollment(EnrollmentDTO enrollment);
+        Task<dynamic> DeleteEnrollment(int enrollmentId);
+        dynamic GetEnrollmentsByUserId(string userId);
 
     }
 }

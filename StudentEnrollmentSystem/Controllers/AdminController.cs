@@ -27,7 +27,15 @@ namespace StudentEnrollmentSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAdminUsersAsync()
         {
-            return await _adminRepository.GetAdminUsersAsync();
+            var result = await _adminRepository.GetAdminUsersAsync();
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
@@ -35,49 +43,90 @@ namespace StudentEnrollmentSystem.Controllers
 
         public async Task<IActionResult> SignUp([FromBody] SignUpDTO model)
         {
-            return await _adminRepository.SignUp(model);
+            var result = await _adminRepository.SignUp(model);
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpGet("profile/{id}")]
         public async Task<IActionResult> GetUserProfileById(string id)
         {
-            return await _adminRepository.GetUserProfileById(id);
+            var result = await _adminRepository.GetUserProfileById(id);
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUserProfile(string id, ProfileDTO model)
         {
-            return await _adminRepository.UpdateUserProfile(id, model);
+            var result = await _adminRepository.UpdateUserProfile(id, model);
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            return await _adminRepository.DeleteUser(id);
+            var result = await _adminRepository.DeleteUser(id);
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpGet("enrollments")]
         public async Task<IActionResult> GetAllEnrollmentsAsync()
         {
-            return await _adminRepository.GetAllEnrollmentsAsync();
+            var result = await _adminRepository.GetAllEnrollmentsAsync();
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpPut("enrollments/approval/{enrollmentId}")]
         public async Task<IActionResult> ApproveOrRejectEnrollment(int enrollmentId, int status)
         {
-            return await _adminRepository.ApproveOrRejectEnrollment(enrollmentId, status);
+            var result = await _adminRepository.ApproveOrRejectEnrollment(enrollmentId, status);
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
     }
-}
-enum EnrollmentStatus : ushort
-{
-    Reject = 0,
-    Pending = 1,
-    Approve = 2
-
 }

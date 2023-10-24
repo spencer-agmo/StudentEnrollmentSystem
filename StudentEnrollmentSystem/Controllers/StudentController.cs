@@ -25,21 +25,47 @@ namespace StudentEnrollmentSystem.Controllers
         [HttpPost("enrollments")]
         public async Task<ActionResult<Enrollment>> PostEnrollment(EnrollmentDTO enrollment)
         {
-           return await _studentRepository.PostEnrollment(enrollment);
+            var result = await _studentRepository.PostEnrollment(enrollment);
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "student")]
         [HttpDelete("enrollments/{enrollmentId}")]
         public async Task<IActionResult> DeleteEnrollment(int enrollmentId)
         {
-           return await _studentRepository.DeleteEnrollment(enrollmentId);
+
+            var result = await _studentRepository.DeleteEnrollment(enrollmentId);
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "student")]
         [HttpGet("enrollments/{userId}")]
         public IActionResult GetEnrollmentsByUserId(string userId)
         {
-            return _studentRepository.GetEnrollmentsByUserId(userId);   
+
+            var result = _studentRepository.GetEnrollmentsByUserId(userId);
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
     }
 }

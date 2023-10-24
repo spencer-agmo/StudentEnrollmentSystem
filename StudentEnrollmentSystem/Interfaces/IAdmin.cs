@@ -6,13 +6,13 @@ namespace StudentEnrollmentSystem.Interfaces
 {
     public interface IAdmin
     {
-        Task<IActionResult> GetAdminUsersAsync();
-        Task<IActionResult> SignUp([FromBody] SignUpDTO model);
-        Task<IActionResult> GetUserProfileById(string id);
-        Task<IActionResult> UpdateUserProfile(string id, ProfileDTO model);
-        Task<IActionResult> DeleteUser(string id);
-        Task<IActionResult> GetAllEnrollmentsAsync();
-        Task<IActionResult> ApproveOrRejectEnrollment(int enrollmentId, int status);
+        Task<dynamic> GetAdminUsersAsync();
+        Task<dynamic> SignUp([FromBody] SignUpDTO model);
+        Task<dynamic> GetUserProfileById(string id);
+        Task<dynamic> UpdateUserProfile(string id, ProfileDTO model);
+        Task<dynamic> DeleteUser(string id);
+        Task<dynamic> GetAllEnrollmentsAsync();
+        Task<dynamic> ApproveOrRejectEnrollment(int enrollmentId, int status);
 
     }
 }

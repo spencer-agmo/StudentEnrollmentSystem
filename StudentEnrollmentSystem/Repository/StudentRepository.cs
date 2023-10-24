@@ -10,7 +10,7 @@ using StudentEnrollmentSystem.Models.Auth;
 
 namespace StudentEnrollmentSystem.Repository
 {
-    public class StudentRepository : Controller, IStudent
+    public class StudentRepository : IStudent
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
@@ -23,7 +23,7 @@ namespace StudentEnrollmentSystem.Repository
             _roleManager = roleManager;
             _DataContext = DataContext;
         }
-        public async Task<ActionResult<Enrollment>> PostEnrollment(EnrollmentDTO enrollment)
+        public async Task<dynamic> PostEnrollment(EnrollmentDTO enrollment)
         {
             var enroll = _mapper.Map<Enrollment>(enrollment);
             _DataContext.Enrollments.Add(enroll);
@@ -40,15 +40,15 @@ namespace StudentEnrollmentSystem.Repository
             existingCourse.AvailableSlot -= 1;
             await _DataContext.SaveChangesAsync();
 
-            return Ok("Enrollment submmitted");
+            return new ServiceResponse<string>("Ok","Enrollment submmitted");
         }
-        public async Task<IActionResult> DeleteEnrollment(int enrollmentId)
+        public async Task<dynamic> DeleteEnrollment(int enrollmentId)
         {
             var enrollment = await _DataContext.Enrollments.FindAsync(enrollmentId);
 
             if (enrollment == null)
             {
-                return NotFound("Enrollment not found");
+                return new ServiceResponse<string>("Enrollment not found");
             }
 
             var existingCourse = _DataContext.Courses.Find(enrollment.CourseId);
@@ -56,9 +56,9 @@ namespace StudentEnrollmentSystem.Repository
             _DataContext.Enrollments.Remove(enrollment);
             await _DataContext.SaveChangesAsync();
 
-            return Ok("Enrollment deleted successfully");
+            return new ServiceResponse<string>("Ok","Enrollment deleted successfully");
         }
-        public IActionResult GetEnrollmentsByUserId(string userId)
+        public dynamic GetEnrollmentsByUserId(string userId)
         {
             var enrollments = _DataContext.Enrollments
                 .Where(e => e.UserId == userId)
@@ -67,7 +67,7 @@ namespace StudentEnrollmentSystem.Repository
 
             if (!enrollments.Any())
             {
-                return NotFound("No enrollments found for the user");
+                return new ServiceResponse<string>("No enrollments found for the user");
             }
 
             var enrollmentModels = enrollments.Select(enrollment => new
@@ -101,7 +101,7 @@ namespace StudentEnrollmentSystem.Repository
                 CourseInfo = course.CourseInfo
             }).ToList();
 
-            return Ok(result);
+            return new ServiceResponse<Object>(result,"Enrollments get by userid successful.");
         }
     }
 }

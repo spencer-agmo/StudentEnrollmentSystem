@@ -17,7 +17,7 @@ using System.Text;
 
 namespace StudentEnrollmentSystem.Repository
 {
-    public class AccountRepository : Controller, IAccount
+    public class AccountRepository :  IAccount
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
@@ -65,16 +65,16 @@ namespace StudentEnrollmentSystem.Repository
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-           public async Task<IActionResult> SignUp([FromBody] SignUpDTO model)
+           public async Task<dynamic> SignUp([FromBody] SignUpDTO model)
         {
             ValidationResult validationResult = await _validator.ValidateAsync(model);
 
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult.Errors);
+                return new ServiceResponse<string>(validationResult.Errors.ToString());
+                
             }
-            if (ModelState.IsValid)
-            {
+          
                 var user = _mapper.Map<SignUpDTO,User>(model) ;
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -87,26 +87,18 @@ namespace StudentEnrollmentSystem.Repository
 
                     if (resultRole.Succeeded)
                     {
-                        return Ok("Student registered successfully");
+                        return new ServiceResponse<IdentityResult>(resultRole,"Student SignUp Successful.");
+
                     }
                 }
-
-
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-
-            return BadRequest(ModelState);
+            return new ServiceResponse<string>("Something went wrong.");
         }
-        public async Task<IActionResult> SignIn(UserLoginResource userLoginResource)
+        public async Task<dynamic> SignIn(UserLoginResource userLoginResource)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.Email == userLoginResource.Email);
             if (user is null)
             {
-                return NotFound("User not found");
+                return new ServiceResponse<string>("User not found");
             }
 
             var userSigninResult = await _userManager.CheckPasswordAsync(user, userLoginResource.Password);
@@ -115,58 +107,51 @@ namespace StudentEnrollmentSystem.Repository
             {
 
                 var roles = await _userManager.GetRolesAsync(user);
-                return Ok(GenerateJwt(user, roles));
+                return new ServiceResponse<string>(GenerateJwt(user, roles),"SignIn Successful.");
 
             }
 
-            return BadRequest("Email or password incorrect.");
+            return new ServiceResponse<string>("Email or password incorrect.");
         }
-        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordModel model)
+        public async Task<dynamic> ChangePassword([FromBody] ChangePasswordModel model)
         {
-            if (ModelState.IsValid)
-            {
+          
                 var user = await _userManager.FindByIdAsync(model.Id);
 
                 if (user == null)
                 {
-                    return NotFound("User not found");
+                    return new ServiceResponse<string>("User not found");
                 }
 
                 var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
 
                 if (changePasswordResult.Succeeded)
                 {
-                    return Ok("Password changed successfully");
+                    return new ServiceResponse<string>("Ok","Password changed successfully");
                 }
 
-                foreach (var error in changePasswordResult.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-
-            return BadRequest(ModelState);
+            return new ServiceResponse<string>("Something went wrong.");
         }
-        public async Task<IActionResult> GetUserProfileById(string id)
+        public async Task<dynamic> GetUserProfileById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
-                return NotFound("User not found");
+                return new ServiceResponse<string>("User not found");
             }
 
             var userProfile = _mapper.Map<ProfileDTO>(user);
 
-            return Ok(userProfile);
+            return new ServiceResponse<ProfileDTO>(userProfile,"Profile get successful.");
         }
-        public async Task<IActionResult> UpdateUserProfile(string id, ProfileDTO model)
+        public async Task<dynamic> UpdateUserProfile(string id, ProfileDTO model)
         {
             var user = await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
-                return NotFound("User not found");
+                return new ServiceResponse<string>("User not found");
             }
 
             _mapper.Map(model, user);
@@ -175,15 +160,10 @@ namespace StudentEnrollmentSystem.Repository
 
             if (result.Succeeded)
             {
-                return Ok("User profile updated successfully");
+                return new ServiceResponse<IdentityResult>(result,"User profile updated successfully");
             }
 
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            return BadRequest(ModelState);
+            return new ServiceResponse<string>("Something went wrong.");
         }
     }
 }
