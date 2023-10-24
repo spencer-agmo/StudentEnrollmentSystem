@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using StudentEnrollmentSystem.Data;
 using StudentEnrollmentSystem.Interfaces;
 using StudentEnrollmentSystem.Models;
@@ -14,16 +15,17 @@ namespace StudentEnrollmentSystem.Repository
             _context = context;
         }
 
-        public ICollection<Course> GetCourses()
+        public async Task<ICollection<Course>> GetCourses()
         {
-            return _context.Courses.OrderBy(course => course.CourseId).ToList();
+            return await _context.Courses.OrderBy(course => course.CourseId).ToListAsync();
         }
 
-        public Course GetCourseById(int courseId)
+        public async Task<Course> GetCourseById(int courseId)
         {
-            return _context.Courses.FirstOrDefault(course => course.CourseId == courseId);
+            return await _context.Courses.FirstOrDefaultAsync(course => course.CourseId == courseId);
         }
-        public void CreateCourse(Course course)
+
+        public async Task CreateCourse(Course course)
         {
             if (course == null)
             {
@@ -31,17 +33,17 @@ namespace StudentEnrollmentSystem.Repository
             }
 
             _context.Courses.Add(course);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateCourse(Course course)
+        public async Task UpdateCourse(Course course)
         {
             if (course == null)
             {
                 throw new ArgumentNullException(nameof(course));
             }
 
-            var existingCourse = _context.Courses.Find(course.CourseId);
+            var existingCourse = await _context.Courses.FindAsync(course.CourseId);
 
             if (existingCourse == null)
             {
@@ -53,12 +55,12 @@ namespace StudentEnrollmentSystem.Repository
             existingCourse.Room = course.Room;
             existingCourse.AvailableSlot = course.AvailableSlot;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteCourse(int courseId)
+        public async Task DeleteCourse(int courseId)
         {
-            var course = _context.Courses.Find(courseId);
+            var course = await _context.Courses.FindAsync(courseId);
 
             if (course == null)
             {
@@ -66,11 +68,11 @@ namespace StudentEnrollmentSystem.Repository
             }
 
             _context.Courses.Remove(course);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-      
 
-        
+
+
     }
 }

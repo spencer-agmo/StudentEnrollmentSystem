@@ -4,10 +4,10 @@ namespace StudentEnrollmentSystem.Interfaces
 {
     public interface ICourse
     {
-        ICollection<Course> GetCourses();
-     void UpdateCourse(Course course);
-        void CreateCourse(Course course);
-        void DeleteCourse(int courseId);
-        Course GetCourseById(int courseId);
+        Task<ICollection<Course>> GetCourses();
+        Task UpdateCourse(Course course);
+        Task CreateCourse(Course course);
+        Task DeleteCourse(int courseId);
+        Task<Course> GetCourseById(int courseId);
     }
 }
