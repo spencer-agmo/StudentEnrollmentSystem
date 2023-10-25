@@ -12,6 +12,7 @@ namespace StudentEnrollmentSystem.AutoMapper
             CreateMap<User, ProfileDTO>();
             CreateMap<ProfileDTO, User>();
             CreateMap<EnrollmentDTO, Enrollment>();
+            CreateMap<CourseDTO, Course>();
             CreateMap<SignUpDTO, User>().ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email)); ;
         }
     }

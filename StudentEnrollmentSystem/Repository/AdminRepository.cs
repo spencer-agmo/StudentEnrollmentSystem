@@ -16,17 +16,13 @@ namespace StudentEnrollmentSystem.Repository
 
 
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly DataContext _dataContext;
         private readonly IMapper _mapper;
-        private readonly JwtSettings _jwtSettings;
-        public AdminRepository(IMapper mapper, UserManager<User> userManager, RoleManager<Role> roleManager, DataContext DataContext, IOptionsSnapshot<JwtSettings> jwtSettings)
+        public AdminRepository(IMapper mapper, UserManager<User> userManager, DataContext DataContext)
         {
             _mapper = mapper;
             _userManager = userManager;
-            _roleManager = roleManager;
             _dataContext = DataContext;
-            _jwtSettings = jwtSettings.Value;
         }
         public async Task<dynamic> GetAdminUsersAsync()
         {

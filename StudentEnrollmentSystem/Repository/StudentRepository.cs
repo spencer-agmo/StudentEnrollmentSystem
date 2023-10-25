@@ -12,15 +12,11 @@ namespace StudentEnrollmentSystem.Repository
 {
     public class StudentRepository : IStudent
     {
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly DataContext _DataContext;
         private readonly IMapper _mapper;
-        public StudentRepository(IMapper mapper, UserManager<User> userManager, RoleManager<Role> roleManager, DataContext DataContext)
+        public StudentRepository(IMapper mapper, DataContext DataContext)
         {
             _mapper = mapper;
-            _userManager = userManager;
-            _roleManager = roleManager;
             _DataContext = DataContext;
         }
         public async Task<dynamic> PostEnrollment(EnrollmentDTO enrollment)

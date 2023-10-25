@@ -20,20 +20,17 @@ namespace StudentEnrollmentSystem.Repository
     public class AccountRepository :  IAccount
     {
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly IMapper _mapper;
         private readonly JwtSettings _jwtSettings;
         IValidator<SignUpDTO> _validator;
         public AccountRepository(
      IMapper mapper,
      UserManager<User> userManager,
-     RoleManager<Role> roleManager,
      IOptionsSnapshot<JwtSettings> jwtSettings,
      IValidator<SignUpDTO> validator)
         {
             _mapper = mapper;
             _userManager = userManager;
-            _roleManager = roleManager;
             _jwtSettings = jwtSettings.Value;
             _validator = validator;
         }

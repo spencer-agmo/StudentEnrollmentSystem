@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Exchange.WebServices.Data;
+using StudentEnrollmentSystem.DTO;
 using StudentEnrollmentSystem.Interfaces;
 using StudentEnrollmentSystem.Models;
+using StudentEnrollmentSystem.Models.Auth;
+using StudentEnrollmentSystem.UOW;
 using System;
 using System.Collections.Generic;
 
@@ -12,76 +17,87 @@ namespace StudentEnrollmentSystem.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourse _courseRepository;
-
-        public CourseController(ICourse courseRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public CourseController(ICourse courseRepository, IUnitOfWork unitOfWork)
         {
             _courseRepository = courseRepository;
+            _unitOfWork = unitOfWork;  
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpGet]
-        public IActionResult GetCourses()
+        public async Task<IActionResult> GetCourses()
         {
-            var courses = _courseRepository.GetCourses();
-            return Ok(courses);
+
+            var result = await _courseRepository.GetCourses();
+            if (result?.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpGet("{id}", Name = "GetCourseById")]
-        public IActionResult GetCourse(int id)
+        public async Task<IActionResult> GetCourseAsync(int id)
         {
-            var course = _courseRepository.GetCourseById(id);
-            if (course == null)
+            var result = await _courseRepository.GetCourseById(id);
+            if (result?.Success)
             {
-                return NotFound();
+                return Ok(result);
             }
-            return Ok(course);
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpPost]
-        public IActionResult CreateCourse([FromBody] Course course)
+        public async Task<IActionResult> CreateCourse([FromBody] CourseDTO course)
         {
-            if (course == null)
+            var result = await _courseRepository.CreateCourse(course);
+            if (result?.Success)
             {
-                return BadRequest();
+                return Ok(result);
             }
-
-            _courseRepository.CreateCourse(course);
-            return CreatedAtRoute("GetCourseById", new { id = course.CourseId }, course);
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpPut("{id}")]
-        public IActionResult UpdateCourse(int id, [FromBody] Course course)
+        public async Task<IActionResult> UpdateCourse(int id, [FromBody] CourseDTO course)
         {
-            if (course == null || course.CourseId != id)
+            var result = await _courseRepository.UpdateCourse( id, course);
+            if (result?.Success)
             {
-                return BadRequest();
+                return Ok(result);
             }
-
-            var existingCourse = _courseRepository.GetCourseById(id);
-            if (existingCourse == null)
+            else
             {
-                return NotFound();
+                return BadRequest(result.Message);
             }
-
-            _courseRepository.UpdateCourse(course);
-            return Ok(true);
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
         [HttpDelete("{id}")]
-        public IActionResult DeleteCourse(int id)
+        public async Task<IActionResult> DeleteCourse(int id)
         {
-            var course = _courseRepository.GetCourseById(id);
-            if (course == null)
+            var result = await _courseRepository.DeleteCourse(id);
+            if (result?.Success)
             {
-                return NotFound();
+                return Ok(result);
             }
-
-            _courseRepository.DeleteCourse(id);
-            return Ok(true);
+            else
+            {
+                return BadRequest(result.Message);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using StudentEnrollmentSystem.DTO;
 using StudentEnrollmentSystem.Interfaces;
 using StudentEnrollmentSystem.Repository;
+using StudentEnrollmentSystem.UOW;
 
 namespace StudentEnrollmentSystem.Extensions
 {
@@ -14,6 +15,7 @@ namespace StudentEnrollmentSystem.Extensions
             services.AddScoped<IAccount, AccountRepository>();
             services.AddScoped<IAdmin, AdminRepository>();
             services.AddScoped<IStudent, StudentRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

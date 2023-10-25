@@ -1,13 +1,14 @@
-﻿using StudentEnrollmentSystem.Models;
+﻿using StudentEnrollmentSystem.DTO;
+using StudentEnrollmentSystem.Models;
 
 namespace StudentEnrollmentSystem.Interfaces
 {
     public interface ICourse
     {
-        Task<ICollection<Course>> GetCourses();
-        Task UpdateCourse(Course course);
-        Task CreateCourse(Course course);
-        Task DeleteCourse(int courseId);
-        Task<Course> GetCourseById(int courseId);
+        Task<dynamic> GetCourses();
+        Task<dynamic> UpdateCourse(int id,CourseDTO course);
+        Task<dynamic> CreateCourse(CourseDTO course);
+        Task<dynamic> DeleteCourse(int courseId);
+        Task<dynamic> GetCourseById(int courseId);
     }
 }
