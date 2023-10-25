@@ -35,7 +35,7 @@ namespace StudentEnrollmentSystem.Repository
             var result = courses.GetByID(courseId);
             if (result == null)
             {
-                return new ServiceResponse<IEnumerable<Course>>( "Course not found.");
+                return new ServiceResponse<string>( "Course not found.");
             }
             return new ServiceResponse<Course>(result, "Get course successful.");
         }
